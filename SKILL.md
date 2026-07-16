@@ -60,7 +60,7 @@ First run fetches CFFEX monthly ZIPs + akshare index data and caches them under 
 |---|---|
 | `DATA_SOURCE_PRIMARY` / `DATA_SOURCE_FALLBACK` | Data source switch points (`cffex_akshare`, `akshare`, `local`, `wind`, `mock`) |
 | `ASSUME_ZERO_DIVIDEND_DEFAULT` | `True` = raw basis (default); `False` = pulls per-year dividend events |
-| Primary holding period `N` | 8 trading days (信达口径); robustness scan over `[5, 10, 20]` |
+| Primary holding period `N` | 8 trading days (某券商口径); robustness scan over `[5, 10, 20]` |
 | `COST` | Zero by default — "theoretical" backtest, not net of slippage/fees |
 | Signal-direction quantiles | 10%/90% over a trailing ~3y window, `shift(1)`'d to avoid same-day leakage |
 | Walk-forward gates | HAC t-stat ≥ 2.13 (Bonferroni-corrected), Sharpe(NW) ≥ 0.5, else falls back to flat |

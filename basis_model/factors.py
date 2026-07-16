@@ -117,7 +117,7 @@ def term_structure_factor(panel: pd.DataFrame, f1: pd.Series) -> pd.Series:
     作为市场级期限结构斜率信号，再广播到该 (date, index_code) 下所有合约的行上。
     该因子刻画的是"近端-远端"贴水/升水的陡峭程度，而非单一合约自身的基差水平。
 
-    注：sanity check 参考（信达 IC, N=8）显示该因子回归系数不显著，属于弱因子，
+    注：sanity check 参考（某券商 IC, N=8）显示该因子回归系数不显著，属于弱因子，
     保留是为了统计上的完整性与后续升级（如联合期限结构模型）。
     """
     tmp = panel.copy()

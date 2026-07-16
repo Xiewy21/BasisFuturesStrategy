@@ -13,7 +13,7 @@
       交互项进入历史回归。forecast.py 不读取该列，而是读取用户
       给定的 expected_return 情景，因此不构成前视。
 
-sanity check 参考系数（信达 IC, N=8，仅供数量级校验，不是断言标准）：
+sanity check 参考系数（某券商 IC, N=8，仅供数量级校验，不是断言标准）：
     a1(当前年化基差) ≈ -1.5082
     季月收益率系数   ≈ 2.0447
     期限结构因子(N=8) 不显著
@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-#: sanity check 参考值（信达 IC, N=8），仅用于量级校验，不作为强断言标准
+#: sanity check 参考值（某券商 IC, N=8），仅用于量级校验，不作为强断言标准
 SANITY_REFERENCE_COEFFICIENTS: dict[str, float] = {
     "index_code": "000905",
     "N": 8,
