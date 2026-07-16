@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+.pytest_cache/
+.basis_cache/
+
+# real local data goes here at runtime; only the format docs are tracked
+input/local_data/*
+!input/local_data/README.md
+input/local_dividend/*
+!input/local_dividend/README.md
+
+# backtest results are generated locally, not bundled in the repo
+output/*
+!output/README.md
