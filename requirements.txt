@@ -8,6 +8,7 @@ pyarrow>=14.0
 openpyxl>=3.1
 xlrd>=2.0
 pytest>=7.4
+matplotlib>=3.8
 
 # 可选，仅 report.py 需要
 python-docx>=1.1

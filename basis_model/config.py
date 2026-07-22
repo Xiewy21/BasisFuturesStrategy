@@ -174,3 +174,101 @@ class BacktestConfig:
 
 
 DEFAULT_CONFIG = BacktestConfig()
+
+
+# --------------------------------------------------------------------------- #
+# 基差复盘分析模块（term_structure / basis_center / convergence_prob /
+# neutral_hedge_timing）参数。四个模块共用同一份配置，任何口径调整只改这里，
+# 不动各模块内部逻辑。
+# --------------------------------------------------------------------------- #
+
+#: 复盘输出统一落到 output/<variant>/review/ 下。
+REVIEW_OUTPUT_SUBDIR: str = "review"
+
+#: 阶段一：常数期限网格（单位：自然日），端点外不外推。
+TERM_GRID_DAYS: tuple[int, ...] = (30, 60, 90, 180)
+#: 常数期限插值方法："linear" 或 "cubic"。
+TERM_INTERP_METHOD: str = "linear"
+#: PCA 保留的主成分个数。
+TERM_PCA_N_COMPONENTS: int = 3
+
+#: 阶段二：中枢滚动窗口（交易日），主口径 250 日，另跑 500 日对照。
+BASIS_CENTER_WINDOW: int = 250
+BASIS_CENTER_WINDOW_ALT: int = 500
+#: 滚动分位带。
+BASIS_CENTER_QUANTILES: tuple[float, ...] = (0.25, 0.50, 0.75)
+#: 中枢窗口内最少观测数（不足则该日中枢/std 为 NaN）。
+BASIS_CENTER_MIN_PERIODS: int = 60
+#: 统计口径异常阈值：滚动分位 <5%/>95%，等价于双尾各 5%。
+ANOMALY_TAIL_PCT: float = 0.05
+#: |z| 异常阈值。
+ANOMALY_Z_THRESHOLD: float = 2.0
+#: 持续性口径：连续处于极端分位的最少交易日数。
+ANOMALY_PERSISTENCE_M: int = 3
+
+#: 阶段三：收敛事件的未来窗口（交易日），主 N=8，另跑 20/60 对照。
+CONVERGENCE_N_HORIZONS: tuple[int, ...] = (8, 20, 60)
+#: 收敛判定阈值：|f1-中枢| < 0.5*滚动std，或相对初始偏离收敛掉的比例。
+CONVERGENCE_STD_THRESHOLD: float = 0.5
+CONVERGENCE_DECAY_THRESHOLD: float = 0.5
+#: 到期效应分层：主结果只用剩余交易日 > 20 的样本。
+CONVERGENCE_MIN_DTE: int = 20
+#: z 分桶边界（不含 ±inf，函数内部会补上）。
+CONVERGENCE_Z_BUCKET_EDGES: tuple[float, ...] = (-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0)
+#: block bootstrap 重复次数与置信区间。
+CONVERGENCE_BOOTSTRAP_REPS: int = 500
+CONVERGENCE_BOOTSTRAP_CI: tuple[float, float] = (0.025, 0.975)
+CONVERGENCE_BOOTSTRAP_SEED: int = 42
+
+#: 阶段四：中性策略择时的 purge/embargo 天数，沿用主 N。
+HEDGE_TIMING_PURGE_DAYS: int = N_HORIZON
+HEDGE_TIMING_EMBARGO_DAYS: int = N_HORIZON
+#: walk-forward 训练/测试窗口，沿用动态选向同一套口径。
+HEDGE_TIMING_TRAIN_YEARS: int = WALKFORWARD_TRAIN_YEARS
+HEDGE_TIMING_TEST_MONTHS: int = WALKFORWARD_TEST_MONTHS
+#: 富贵度->敞口映射中，收敛概率对基础富贵度的最大加权修正幅度。
+HEDGE_TIMING_TILT_WEIGHT: float = 0.4
+#: 富贵度 richness 的 z 值裁剪范围（超出裁剪到边界）。
+HEDGE_TIMING_RICHNESS_Z_CLIP: float = 3.0
+
+
+@dataclass(frozen=True)
+class ReviewConfig:
+    """基差复盘四个模块共用的参数集合，字段默认值取自上面的模块级常量。"""
+
+    output_subdir: str = REVIEW_OUTPUT_SUBDIR
+    rolling_window: int = ROLLING_WINDOW
+    min_obs: int = MIN_OBS
+    refit_every: int = REFIT_EVERY
+    n_horizon: int = N_HORIZON
+
+    term_grid_days: tuple[int, ...] = TERM_GRID_DAYS
+    term_interp_method: str = TERM_INTERP_METHOD
+    term_pca_n_components: int = TERM_PCA_N_COMPONENTS
+
+    basis_center_window: int = BASIS_CENTER_WINDOW
+    basis_center_window_alt: int = BASIS_CENTER_WINDOW_ALT
+    basis_center_quantiles: tuple[float, ...] = BASIS_CENTER_QUANTILES
+    basis_center_min_periods: int = BASIS_CENTER_MIN_PERIODS
+    anomaly_tail_pct: float = ANOMALY_TAIL_PCT
+    anomaly_z_threshold: float = ANOMALY_Z_THRESHOLD
+    anomaly_persistence_m: int = ANOMALY_PERSISTENCE_M
+
+    convergence_n_horizons: tuple[int, ...] = CONVERGENCE_N_HORIZONS
+    convergence_std_threshold: float = CONVERGENCE_STD_THRESHOLD
+    convergence_decay_threshold: float = CONVERGENCE_DECAY_THRESHOLD
+    convergence_min_dte: int = CONVERGENCE_MIN_DTE
+    convergence_z_bucket_edges: tuple[float, ...] = CONVERGENCE_Z_BUCKET_EDGES
+    convergence_bootstrap_reps: int = CONVERGENCE_BOOTSTRAP_REPS
+    convergence_bootstrap_ci: tuple[float, float] = CONVERGENCE_BOOTSTRAP_CI
+    convergence_bootstrap_seed: int = CONVERGENCE_BOOTSTRAP_SEED
+
+    hedge_timing_purge_days: int = HEDGE_TIMING_PURGE_DAYS
+    hedge_timing_embargo_days: int = HEDGE_TIMING_EMBARGO_DAYS
+    hedge_timing_train_years: int = HEDGE_TIMING_TRAIN_YEARS
+    hedge_timing_test_months: int = HEDGE_TIMING_TEST_MONTHS
+    hedge_timing_tilt_weight: float = HEDGE_TIMING_TILT_WEIGHT
+    hedge_timing_richness_z_clip: float = HEDGE_TIMING_RICHNESS_Z_CLIP
+
+
+DEFAULT_REVIEW_CONFIG = ReviewConfig()

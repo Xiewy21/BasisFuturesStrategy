@@ -17,6 +17,12 @@
        用断言 (assert_no_lookahead) 与单测强制检查。
     3. 硬软分离：forecast 层返回结果必须显式区分 from_regression（硬，统计外推）
        与 from_qualitative（软，定性判断），不得混为一谈。
+
+【基差复盘模块（可独立于四层流水线运行，只读 run.py 已产出的 factor_panel.csv）】
+    term_structure(期限结构PCA) -> basis_center(中枢/异常)
+        -> convergence_prob(收敛概率) -> neutral_hedge_timing(对冲择时)
+    四者互不阻塞，各自 main() 都能单独 `python -m basis_model.<module>` 运行；
+    结果统一写入 output/<variant>/review/。
 """
 
 __version__ = "0.1.0"
@@ -29,4 +35,9 @@ __all__ = [
     "strategy",
     "forecast",
     "report",
+    "review_common",
+    "term_structure",
+    "basis_center",
+    "convergence_prob",
+    "neutral_hedge_timing",
 ]
